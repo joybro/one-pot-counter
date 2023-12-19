@@ -1,17 +1,44 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as Cdk from '../lib/cdk-stack';
+import * as cdk from "aws-cdk-lib";
+import { Template } from "aws-cdk-lib/assertions";
+import { ContentDeliveryStack } from "../lib/content-delivery-stack";
+import { WebHostingStack } from "../lib/web-hosting-stack";
+import { Bucket } from "aws-cdk-lib/aws-s3";
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/cdk-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new Cdk.CdkStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+test("WebHostingStack has the correct resources", () => {
+    const app = new cdk.App();
+    // Initialize the stack
+    const stack = new WebHostingStack(app, "OnePot-Counter-WebHostingStack", {
+        // Include any necessary stack props here
+    });
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+    // Convert stack to a template
+    const template = Template.fromStack(stack);
+
+    // Example assertion: checks if an S3 bucket is created
+    template.hasResourceProperties("AWS::S3::Bucket", {});
+});
+
+test("ContentDeliveryStack has the correct resources", () => {
+    const app = new cdk.App();
+
+    // Create a mock stack and mock bucket
+    const mockStack = new cdk.Stack(app, "MockStack");
+    const mockBucket = new Bucket(mockStack, "MockBucket");
+
+    // Initialize the stack
+    const stack = new ContentDeliveryStack(
+        app,
+        "OnePot-Counter-ContentDeliveryStack",
+        {
+            // Mock an S3 bucket or pass necessary properties
+            contentBucket: mockBucket,
+            enableLogging: false,
+        }
+    );
+
+    // Convert stack to a template
+    const template = Template.fromStack(stack);
+
+    // Example assertion: checks if a CloudFront distribution is created
+    template.hasResourceProperties("AWS::CloudFront::Distribution", {});
 });
