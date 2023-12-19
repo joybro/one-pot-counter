@@ -5,7 +5,10 @@ import { WebHostingStack } from "../lib/web-hosting-stack";
 import { ContentDeliveryStack } from "../lib/content-delivery-stack";
 
 const app = new cdk.App();
-const webAssetStack = new WebHostingStack(
+
+// Separating WebHostingStack and ContentDeliveryStack for efficient deployment management.
+// WebHostingStack is redeployed with frontend updates, while ContentDeliveryStack remains unchanged.
+const webHostingStack = new WebHostingStack(
     app,
     "OnePot-Counter-WebHostingStack",
     {
@@ -13,6 +16,6 @@ const webAssetStack = new WebHostingStack(
     }
 );
 new ContentDeliveryStack(app, "OnePot-Counter-ContentDeliveryStack", {
-    contentBucket: webAssetStack.assetBucket,
+    contentBucket: webHostingStack.assetBucket,
     enableLogging: false,
 });
