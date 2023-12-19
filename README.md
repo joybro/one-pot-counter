@@ -2,6 +2,10 @@
 
 Welcome to the OnePot Counter project! This simple yet robust web application serves as an exemplary showcase for integrating React with AWS services using the Cloud Development Kit (CDK). It's designed to be a straightforward starting point for similar projects, illustrating best practices in setup and configuration.
 
+## Live Demo
+
+Experience the live version of OnePot Counter [here](https://d252xm6a9k7j8o.cloudfront.net/).
+
 ## Getting Started
 
 ### Setting Up and Deploying with AWS CDK

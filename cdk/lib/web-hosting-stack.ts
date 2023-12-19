@@ -3,7 +3,7 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3Deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
-export class WebAssetStack extends cdk.Stack {
+export class WebHostingStack extends cdk.Stack {
     public readonly assetBucket: s3.Bucket;
 
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
