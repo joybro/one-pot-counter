@@ -25,6 +25,16 @@ npm run cdk:bootstrap
 npm run cdk:deploy
 ```
 
+## Technology Stack
+
+This project demonstrates a streamlined integration of key technologies:
+
+-   **React**
+-   **React Scripts**: Simplifies setup and workflow, part of the create-react-app toolkit.
+-   **TypeScript**
+-   **Tailwind CSS**: A utility-first framework for efficient, responsive styling.
+-   **AWS Cloud Development Kit (CDK)**: Manages cloud infrastructure, enabling code-defined resources and deployment.
+
 ## File Naming Conventions
 
 -   **React Files**: Use PascalCase (e.g. `MyComponent.jsx`) for React component files
