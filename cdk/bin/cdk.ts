@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { WebHostingStack } from "../lib/web-hosting-stack";
-import { ContentDeliveryStack } from "../lib/content-delivery-stack";
+import { WebHostingStack } from "../lib/stacks/web-hosting-stack";
+import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
+import { APIStack } from "../lib/stacks/api-stack";
 
 const app = new cdk.App();
 
@@ -11,11 +12,11 @@ const app = new cdk.App();
 const webHostingStack = new WebHostingStack(
     app,
     "OnePot-Counter-WebHostingStack",
-    {
-        /* If you have specific stack props, they go here */
-    }
+    {}
 );
+const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {});
 new ContentDeliveryStack(app, "OnePot-Counter-ContentDeliveryStack", {
     contentBucket: webHostingStack.assetBucket,
     enableLogging: false,
+    apiGatewayEndpoint: `${apiStack.api.api.restApiId}.execute-api.${apiStack.region}.amazonaws.com`,
 });

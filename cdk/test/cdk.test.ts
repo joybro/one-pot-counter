@@ -1,7 +1,8 @@
 import * as cdk from "aws-cdk-lib";
 import { Template } from "aws-cdk-lib/assertions";
-import { ContentDeliveryStack } from "../lib/content-delivery-stack";
-import { WebHostingStack } from "../lib/web-hosting-stack";
+import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
+import { WebHostingStack } from "../lib/stacks/web-hosting-stack";
+import { APIStack } from "../lib/stacks/api-stack";
 import { Bucket } from "aws-cdk-lib/aws-s3";
 
 test("WebHostingStack has the correct resources", () => {
@@ -14,7 +15,7 @@ test("WebHostingStack has the correct resources", () => {
     // Convert stack to a template
     const template = Template.fromStack(stack);
 
-    // Example assertion: checks if an S3 bucket is created
+    // Checks if an S3 bucket is created
     template.hasResourceProperties("AWS::S3::Bucket", {});
 });
 
@@ -24,6 +25,8 @@ test("ContentDeliveryStack has the correct resources", () => {
     // Create a mock stack and mock bucket
     const mockStack = new cdk.Stack(app, "MockStack");
     const mockBucket = new Bucket(mockStack, "MockBucket");
+    const mockApiGatewayEndpoint =
+        "https://mockapi.execute-api.region.amazonaws.com";
 
     // Initialize the stack
     const stack = new ContentDeliveryStack(
@@ -33,12 +36,27 @@ test("ContentDeliveryStack has the correct resources", () => {
             // Mock an S3 bucket or pass necessary properties
             contentBucket: mockBucket,
             enableLogging: false,
+            apiGatewayEndpoint: mockApiGatewayEndpoint,
         }
     );
 
     // Convert stack to a template
     const template = Template.fromStack(stack);
 
-    // Example assertion: checks if a CloudFront distribution is created
+    // Check if the stack has the correct resources
     template.hasResourceProperties("AWS::CloudFront::Distribution", {});
+});
+
+test("APIStack has the correct resources", () => {
+    const app = new cdk.App();
+
+    // Initialize the stack
+    const stack = new APIStack(app, "OnePot-Counter-APIStack", {});
+
+    // Convert stack to a template
+    const template = Template.fromStack(stack);
+
+    // Check if the stack has the correct resources
+    template.hasResourceProperties("AWS::ApiGateway::RestApi", {});
+    template.hasResourceProperties("AWS::Lambda::Function", {});
 });
