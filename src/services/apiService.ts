@@ -7,11 +7,10 @@ const apiClient = axios.create({
 });
 
 const getCounter = async () => {
-    console.log("====================================");
-    console.log(API_BASE_URL);
     try {
         const response = await apiClient.get("/counter");
-        return response.data;
+        const data = response.data;
+        return data.counter || 0;
     } catch (error) {
         // Handle or throw error
         console.error("Error fetching counter data:", error);

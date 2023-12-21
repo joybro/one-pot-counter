@@ -19,6 +19,10 @@ export class APIStack extends cdk.Stack {
         // Define the API Gateway
         this.api = new apigateway.RestApi(this, `${id}-ApiGateway`, {
             restApiName: `${id}-Api`,
+            defaultCorsPreflightOptions: {
+                allowOrigins: apigateway.Cors.ALL_ORIGINS,
+                allowMethods: apigateway.Cors.ALL_METHODS,
+            },
         });
 
         // Define the resources
