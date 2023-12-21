@@ -11,6 +11,7 @@
         "@types/react": "^18.2.45",
         "@types/react-dom": "^18.2.18",
         "aws-cdk-lib": "^2.115.0",
+        "axios": "^1.6.2",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-scripts": "5.0.1",
@@ -24,6 +25,7 @@
         "eject": "react-scripts eject",
         "cdk:bootstrap": "npm run build && cd cdk && cdk bootstrap",
         "cdk:synth": "cd cdk && cdk synth",
+        "cdk:diff": "cd cdk && cdk diff",
         "cdk:test": "cd cdk && jest --config ./jest.config.cdk.js",
         "cdk:deploy": "npm run build && cd cdk && cdk deploy --all",
         "cdk:destroy": "cd cdk && cdk destroy"

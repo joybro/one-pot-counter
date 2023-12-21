@@ -9,7 +9,7 @@ export class WebHostingStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: cdk.StackProps) {
         super(scope, id, props);
 
-        // Define the S3 bucket
+        // Define the S3 bucket for hosting the web assets
         this.assetBucket = new s3.Bucket(this, "WebAssetBucket", {
             websiteIndexDocument: "index.html",
             removalPolicy: cdk.RemovalPolicy.DESTROY,
@@ -18,7 +18,7 @@ export class WebHostingStack extends cdk.Stack {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
         });
 
-        // Deploy the assets to S3 bucket
+        // Deploy the web assets to the S3 bucket
         new s3Deploy.BucketDeployment(this, "DeployWebAsset", {
             sources: [s3Deploy.Source.asset("../build")],
             destinationBucket: this.assetBucket,
@@ -28,5 +28,9 @@ export class WebHostingStack extends cdk.Stack {
         new cdk.CfnOutput(this, "WebAssetBucketName", {
             value: this.assetBucket.bucketName,
         });
+
+        // This URL is referred to by the API stack.
+        // Exporting this value ensures that the reference can be safely deleted if no longer needed.
+        this.exportValue(this.assetBucket.bucketWebsiteUrl);
     }
 }

@@ -4,6 +4,7 @@ import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
 import { WebHostingStack } from "../lib/stacks/web-hosting-stack";
 import { APIStack } from "../lib/stacks/api-stack";
 import { Bucket } from "aws-cdk-lib/aws-s3";
+import { RestApi } from "aws-cdk-lib/aws-apigateway";
 
 test("WebHostingStack has the correct resources", () => {
     const app = new cdk.App();
@@ -25,8 +26,10 @@ test("ContentDeliveryStack has the correct resources", () => {
     // Create a mock stack and mock bucket
     const mockStack = new cdk.Stack(app, "MockStack");
     const mockBucket = new Bucket(mockStack, "MockBucket");
-    const mockApiGatewayEndpoint =
-        "https://mockapi.execute-api.region.amazonaws.com";
+
+    // Add a mock API with a mock method
+    const mockApi = new RestApi(mockStack, "MockApi");
+    mockApi.root.addMethod("GET");
 
     // Initialize the stack
     const stack = new ContentDeliveryStack(
@@ -36,7 +39,7 @@ test("ContentDeliveryStack has the correct resources", () => {
             // Mock an S3 bucket or pass necessary properties
             contentBucket: mockBucket,
             enableLogging: false,
-            apiGatewayEndpoint: mockApiGatewayEndpoint,
+            api: mockApi,
         }
     );
 

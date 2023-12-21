@@ -5,18 +5,16 @@ import { Construct } from "constructs";
 import { ApiGatewayLambdaConstruct } from "../constructs/apigateway-lambda";
 
 export class APIStack extends cdk.Stack {
-    apiEndpoint: string;
+    api: ApiGatewayLambdaConstruct;
 
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
         super(scope, id, props);
 
         // Instantiate the ApiGatewayLambdaConstruct
-        const api = new ApiGatewayLambdaConstruct(this, "Counter", {
+        this.api = new ApiGatewayLambdaConstruct(this, "Counter", {
             lambdaPath: path.resolve(__dirname, "../../lambdas/counter.ts"),
             resourceName: "counter",
             methods: ["GET", "POST"],
         });
-
-        this.apiEndpoint = `https://${api.api.restApiId}.execute-api.${this.region}.amazonaws.com/prod`;
     }
 }

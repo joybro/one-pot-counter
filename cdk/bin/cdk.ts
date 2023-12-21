@@ -18,5 +18,5 @@ const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {});
 new ContentDeliveryStack(app, "OnePot-Counter-ContentDeliveryStack", {
     contentBucket: webHostingStack.assetBucket,
     enableLogging: false,
-    apiGatewayEndpoint: apiStack.apiEndpoint,
+    api: apiStack.api.api,
 });
