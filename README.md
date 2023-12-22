@@ -40,11 +40,11 @@ This project demonstrates a streamlined integration of key technologies:
 
 The project is structured into four distinct CDK stacks:
 
-1. **Frontend Hosting Stack**
-    - **Purpose**: Manages resources for hosting and serving the web application.
+1. **Content Delivery Stack**
+    - **Purpose**: Manages resources for content delivery and request routing.
     - **Resources**:
+        - **CloudFront Distribution**: Serves content from the S3 bucket and routes API requests to API Gateway.
         - **S3 Bucket**: Stores web assets.
-        - **CloudFront Distribution**: Serves content from the S3 bucket.
 2. **API Stack**
     - **Purpose**: Handles backend API infrastructure.
     - **Resources**:

@@ -3,16 +3,36 @@ import { RestApi } from "aws-cdk-lib/aws-apigateway";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import { RestApiOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import * as s3 from "aws-cdk-lib/aws-s3";
+import * as s3Deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
 interface ContentDeliverStackProps extends cdk.StackProps {
-    contentBucket: s3.Bucket;
     enableLogging?: boolean;
     api: RestApi;
 }
 export class ContentDeliveryStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: ContentDeliverStackProps) {
         super(scope, id, props);
+
+        // Define the S3 bucket for hosting the web assets
+        const assetBucket = new s3.Bucket(this, "WebAssetBucket", {
+            websiteIndexDocument: "index.html",
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            // TODO - Block public access and restrict to CloudFront only
+            publicReadAccess: true,
+            blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
+        });
+
+        // Deploy the web assets to the S3 bucket
+        new s3Deploy.BucketDeployment(this, "DeployWebAsset", {
+            sources: [s3Deploy.Source.asset("../build")],
+            destinationBucket: assetBucket,
+        });
+
+        // Output the bucket name
+        new cdk.CfnOutput(this, "WebAssetBucketName", {
+            value: assetBucket.bucketName,
+        });
 
         // Create S3 bucket for CloudFront logs if logging is enabled
         let logBucket: s3.Bucket | undefined;
@@ -30,7 +50,7 @@ export class ContentDeliveryStack extends cdk.Stack {
         // Create CloudFront distribution
         new cloudfront.Distribution(this, "Distribution", {
             defaultBehavior: {
-                origin: new S3Origin(props.contentBucket),
+                origin: new S3Origin(assetBucket),
                 viewerProtocolPolicy:
                     cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
             },
