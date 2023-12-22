@@ -1,9 +1,8 @@
-// File: lib/my-api-stack.ts
 import * as cdk from "aws-cdk-lib";
-import * as path from "path";
-import { Construct } from "constructs";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
+import { Construct } from "constructs";
+import * as path from "path";
 
 export class APIStack extends cdk.Stack {
     public readonly api: apigateway.RestApi;

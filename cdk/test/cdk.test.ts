@@ -1,10 +1,10 @@
 import * as cdk from "aws-cdk-lib";
 import { Template } from "aws-cdk-lib/assertions";
+import { RestApi } from "aws-cdk-lib/aws-apigateway";
+import { Bucket } from "aws-cdk-lib/aws-s3";
+import { APIStack } from "../lib/stacks/api-stack";
 import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
 import { WebHostingStack } from "../lib/stacks/web-hosting-stack";
-import { APIStack } from "../lib/stacks/api-stack";
-import { Bucket } from "aws-cdk-lib/aws-s3";
-import { RestApi } from "aws-cdk-lib/aws-apigateway";
 
 test("WebHostingStack has the correct resources", () => {
     const app = new cdk.App();
