@@ -3,6 +3,8 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.478.0",
+        "@aws-sdk/lib-dynamodb": "^3.478.0",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
@@ -52,6 +54,8 @@
         "@types/aws-lambda": "^8.10.130",
         "autoprefixer": "^10.4.16",
         "aws-cdk": "^2.115.0",
+        "aws-sdk-client-mock": "^3.0.0",
+        "aws-sdk-client-mock-jest": "^3.0.0",
         "esbuild": "^0.19.10",
         "postcss": "^8.4.32",
         "tailwindcss": "^3.4.0",

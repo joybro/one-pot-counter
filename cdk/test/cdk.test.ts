@@ -36,7 +36,11 @@ test("APIStack has the correct resources", () => {
     const app = new cdk.App();
 
     // Initialize the stack
-    const stack = new APIStack(app, "OnePot-Counter-APIStack", {});
+    const stack = new APIStack(app, "OnePot-Counter-APIStack", {
+        counterTableName: "TestTable",
+        counterTableArn:
+            "arn:aws:dynamodb:us-east-1:123456789012:table/TestTable",
+    });
 
     // Convert stack to a template
     const template = Template.fromStack(stack);
