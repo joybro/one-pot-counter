@@ -5,84 +5,87 @@ import {
     UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import { APIGatewayProxyHandler } from "aws-lambda";
+import { CounterApiResponse } from "../../shared/counterTypes";
 
 const ddbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const tableName = process.env.TABLE_NAME;
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-    switch (event.httpMethod) {
-        case "GET":
-            return handleGetRequest();
-        case "POST":
-            return handlePostRequest();
-        default:
-            return {
-                statusCode: 405,
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                },
-                body: JSON.stringify({ message: "Method Not Allowed" }),
-            };
+    try {
+        let response: CounterApiResponse;
+        switch (event.httpMethod) {
+            case "GET":
+                response = await handleGetRequest();
+                break;
+            case "POST":
+                response = await handlePostRequest();
+                break;
+            default:
+                throw new Error("Method Not Allowed");
+        }
+
+        return {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(response),
+        };
+    } catch (error) {
+        console.error(error);
+
+        const errorMessage =
+            error instanceof Error ? error.message : "Internal Server Error";
+        const statusCode = errorMessage === "Method Not Allowed" ? 405 : 500;
+
+        return {
+            statusCode,
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message: errorMessage }),
+        };
     }
 };
 
-const handleError = (error: any) => {
-    console.error(error);
+const getToday = () => new Date().toISOString().split("T")[0];
+
+const handleGetRequest = async (): Promise<CounterApiResponse> => {
+    const today = getToday();
+
+    console.log(today);
+
+    const result = await ddbClient.send(
+        new GetCommand({
+            TableName: tableName,
+            Key: { date: today },
+        })
+    );
+
     return {
-        statusCode: 500,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify(error.message),
+        date: today,
+        greeting_counter: result.Item?.greeting_counter || 0,
     };
 };
 
-const handleGetRequest = async () => {
-    const today = new Date().toISOString().split("T")[0];
+const handlePostRequest = async (): Promise<CounterApiResponse> => {
+    const today = getToday();
 
-    try {
-        const result = await ddbClient.send(
-            new GetCommand({
-                TableName: tableName,
-                Key: { date: today },
-            })
-        );
+    const result = await ddbClient.send(
+        new UpdateCommand({
+            TableName: tableName,
+            Key: { date: today },
+            UpdateExpression:
+                "SET greeting_counter = if_not_exists(greeting_counter, :zero) + :incr",
+            ExpressionAttributeValues: { ":incr": 1, ":zero": 0 },
+            ReturnValues: "UPDATED_NEW",
+        })
+    );
 
-        return {
-            statusCode: 200,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: result.Item?.greeting_counter.toString() || "0",
-        };
-    } catch (error) {
-        return handleError(error);
-    }
-};
-
-const handlePostRequest = async () => {
-    const today = new Date().toISOString().split("T")[0];
-
-    try {
-        const result = await ddbClient.send(
-            new UpdateCommand({
-                TableName: tableName,
-                Key: { date: today },
-                UpdateExpression:
-                    "SET greeting_counter = if_not_exists(greeting_counter, :zero) + :incr",
-                ExpressionAttributeValues: { ":incr": 1, ":zero": 0 },
-                ReturnValues: "UPDATED_NEW",
-            })
-        );
-
-        return {
-            statusCode: 200,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-            body: result.Attributes?.greeting_counter.toString(),
-        };
-    } catch (error) {
-        return handleError(error);
-    }
+    return {
+        date: today,
+        greeting_counter: result.Attributes?.greeting_counter,
+    };
 };
