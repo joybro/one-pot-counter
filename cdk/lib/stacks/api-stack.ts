@@ -1,5 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
+import * as cognito from "aws-cdk-lib/aws-cognito";
 import * as iam from "aws-cdk-lib/aws-iam";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from "constructs";
@@ -8,6 +9,7 @@ import * as path from "path";
 interface APIStackProps extends cdk.StackProps {
     counterTableName: string;
     counterTableArn: string;
+    userPool: cognito.UserPool;
 }
 
 export class APIStack extends cdk.Stack {
@@ -39,6 +41,15 @@ export class APIStack extends cdk.Stack {
             },
         });
 
+        // Add Cognito User Pool Authorizer to API Gateway
+        const authorizer = new apigateway.CognitoUserPoolsAuthorizer(
+            this,
+            "UserPoolAuthorizer",
+            {
+                cognitoUserPools: [props.userPool],
+            }
+        );
+
         // Define the resources
         const apiResource = this.api.root.addResource("api");
         const counterResource = apiResource.addResource("counter");
@@ -47,7 +58,11 @@ export class APIStack extends cdk.Stack {
         ["GET", "POST"].forEach((method) => {
             counterResource.addMethod(
                 method,
-                new apigateway.LambdaIntegration(lambdaFunction)
+                new apigateway.LambdaIntegration(lambdaFunction),
+                {
+                    authorizationType: apigateway.AuthorizationType.COGNITO,
+                    authorizer,
+                }
             );
         });
     }
