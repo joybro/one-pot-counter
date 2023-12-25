@@ -8,22 +8,60 @@ Explore the live version of OnePot Counter [here](https://d252xm6a9k7j8o.cloudfr
 
 ## Getting Started
 
+To set up and deploy OnePot Counter, follow these steps:
+
+### Google OAuth Setup
+
+1. Create a Google Cloud Project:
+    - Go to the [Google Cloud Console](https://console.cloud.google.com).
+    - Create a new project or select an existing one.
+2. Set Up OAuth Credentials:
+    - Navigate to the "Credentials" page in the "APIs & Services" section.
+    - Click "Create credentials" and select "OAuth client ID".
+    - Configure the OAuth consent screen if prompted.
+    - For the application type, choose "Web application".
+    - Add authorized redirect URIs (e.g., https://<your-cognito-domain>/oauth2/idpresponse). These should match the URIs configured in your Cognito User Pool.
+    - Note down the generated "Client ID" and "Client secret".
+3. Update `cdk.json` with Google Client ID:
+    - In your project's `cdk.json` file, add a context key for `googleClientId` with the value of the Google Client ID:
+    ```json
+    {
+        "context": {
+            "googleClientId": "your-google-client-id"
+        }
+    }
+    ```
+4. Store Google Client Secret in AWS Secrets Manager:
+    - Store the Google Client Secret in AWS Secrets Manager:
+    ```sh
+    aws secretsmanager create-secret --name onepot-counter-google-client-secret --secret-string "<YOUR_GOOGLE_CLIENT_SECRET>"
+    ```
+    - Ensure your AWS credentials have the necessary permissions to interact with Secrets Manager.
+
 ### Setting Up and Deploying with AWS CDK
 
-Begin by configuring your AWS environment for the CDK. This involves setting up environment variables to guide the CDK CLI for deploying changes.
+1. Set Environment Variables for CDK:
+    - Define AWS account and credentials to guide the CDK CLI:
+    ```sh
+    # Define AWS account and credentials for CDK
+    export CDK_DEFAULT_ACCOUNT="123456781234"
+    export AWS_ACCESS_KEY_ID="[Your_Access_Key_ID]"
+    export AWS_SECRET_ACCESS_KEY="[Your_Secret_Access_Key]"
+    ```
+2. Bootstrap AWS account for CDK
+    - Prepare your AWS account for CDK deployment
+    ```
+    npm run cdk:bootstrap
+    ```
+3. Deploy the Application
+    - Deploy OnePot Counter to your AWS account
+    ```
+    npm run cdk:deploy
+    ```
 
-```sh
-# Define AWS account and credentials for CDK
-export CDK_DEFAULT_ACCOUNT="123456781234"
-export AWS_ACCESS_KEY_ID="[Your_Access_Key_ID]"
-export AWS_SECRET_ACCESS_KEY="[Your_Secret_Access_Key]"
+### Accessing the Application
 
-# Bootstrap the AWS account for CDK deployment
-npm run cdk:bootstrap
-
-# Deploy the application to AWS
-npm run cdk:deploy
-```
+After deployment, you can access the OnePot Counter application at the URL provided by the CloudFront distribution.
 
 ## Technology Stack
 
