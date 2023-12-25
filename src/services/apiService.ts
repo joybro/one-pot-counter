@@ -9,7 +9,7 @@ const apiClient = axios.create({
 
 const getCounter = async () => {
     try {
-        const response = await apiClient.get("/counter");
+        const response = await apiClient.get("/public-counter");
         const data: CounterApiResponse = response.data;
         return data.greeting_counter || 0;
     } catch (error) {
@@ -21,7 +21,7 @@ const getCounter = async () => {
 
 const incrementCounter = async () => {
     try {
-        const response = await apiClient.post("/counter");
+        const response = await apiClient.post("/public-counter");
         const data: CounterApiResponse = response.data;
         return data.greeting_counter;
     } catch (error) {

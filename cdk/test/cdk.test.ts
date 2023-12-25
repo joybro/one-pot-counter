@@ -78,4 +78,22 @@ test("APIStack has the correct resources", () => {
     // Check if the stack has the correct resources
     template.hasResourceProperties("AWS::ApiGateway::RestApi", {});
     template.hasResourceProperties("AWS::Lambda::Function", {});
+
+    // Check if the stack has the resource with "public-counter" path that does not require authentication
+    template.hasResourceProperties("AWS::ApiGateway::Resource", {
+        PathPart: "public-counter",
+    });
+    template.hasResourceProperties("AWS::ApiGateway::Method", {
+        HttpMethod: "GET",
+        AuthorizationType: "NONE",
+    });
+
+    // Check if the stack has the resource with "my-counter" path that requires authentication
+    template.hasResourceProperties("AWS::ApiGateway::Resource", {
+        PathPart: "my-counter",
+    });
+    template.hasResourceProperties("AWS::ApiGateway::Method", {
+        HttpMethod: "GET",
+        AuthorizationType: "COGNITO_USER_POOLS",
+    });
 });

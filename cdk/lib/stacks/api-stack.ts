@@ -52,11 +52,20 @@ export class APIStack extends cdk.Stack {
 
         // Define the resources
         const apiResource = this.api.root.addResource("api");
-        const counterResource = apiResource.addResource("counter");
 
-        // Add methods to the resource
+        // Define the public counter resource
+        const publicCounterResource = apiResource.addResource("public-counter");
         ["GET", "POST"].forEach((method) => {
-            counterResource.addMethod(
+            publicCounterResource.addMethod(
+                method,
+                new apigateway.LambdaIntegration(lambdaFunction)
+            );
+        });
+
+        // Define the private counter resource
+        const myCounterResource = apiResource.addResource("my-counter");
+        ["GET", "POST"].forEach((method) => {
+            myCounterResource.addMethod(
                 method,
                 new apigateway.LambdaIntegration(lambdaFunction),
                 {
