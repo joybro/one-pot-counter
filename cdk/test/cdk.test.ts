@@ -18,6 +18,7 @@ test("AuthenticationStack has the correct resources", () => {
             googleClientSecret: cdk.SecretValue.secretsManager(
                 "onepot-counter-google-client-secret"
             ),
+            cognitoDomainPrefix: "onepot-counter",
         }
     );
 

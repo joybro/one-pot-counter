@@ -6,6 +6,13 @@ import { Construct } from "constructs";
 interface AuthenticationStackProps extends cdk.StackProps {
     googleClientId: string;
     googleClientSecret: cdk.SecretValue;
+
+    // Note that if you change the prefix after deploying the stack, it will result in
+    // a deployment failure with an "User pool already has a domain configured" error.
+    // Changing or updating Cognito User Pool domains once they are associated with
+    // a user pool is not a straightforward process. To change the domain prefix, you
+    // will need to delete the existing domain in the AWS Console and redeploy the stack.
+    cognitoDomainPrefix: string;
 }
 export class AuthenticationStack extends cdk.Stack {
     public readonly userPool: cognito.UserPool;
@@ -27,7 +34,15 @@ export class AuthenticationStack extends cdk.Stack {
             },
         });
 
-        console.log(props.googleClientId);
+        this.userPool.addDomain("CognitoDomain", {
+            cognitoDomain: {
+                domainPrefix: props.cognitoDomainPrefix,
+            },
+        });
+
+        // Get the domain name of the user pool
+        const userPoolDomain = `${props.cognitoDomainPrefix}.auth.${this.region}.amazoncognito.com`;
+
         // Add Google as an identity provider
         const googleProvider = new cognito.UserPoolIdentityProviderGoogle(
             this,
@@ -60,8 +75,20 @@ export class AuthenticationStack extends cdk.Stack {
         userPoolClient.node.addDependency(googleProvider);
 
         // Outputs for accessing the user pool and client
+        new cdk.CfnOutput(this, "region", {
+            value: this.region,
+        });
+
         new cdk.CfnOutput(this, "UserPoolId", {
             value: this.userPool.userPoolId,
+        });
+
+        new cdk.CfnOutput(this, "UserPoolClientId", {
+            value: userPoolClient.userPoolClientId,
+        });
+
+        new cdk.CfnOutput(this, "UserPoolDomain", {
+            value: userPoolDomain,
         });
     }
 }

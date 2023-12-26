@@ -19,12 +19,17 @@ if (!googleClientId) {
     throw new Error("Failed to get googleClientId context value.");
 }
 
-const authStack = new AuthenticationStack(app, "AuthenticationStack", {
-    googleClientId,
-    googleClientSecret: cdk.SecretValue.secretsManager(
-        "onepot-counter-google-client-secret"
-    ),
-});
+const authStack = new AuthenticationStack(
+    app,
+    "OnePot-Counter-AuthenticationStack",
+    {
+        googleClientId,
+        googleClientSecret: cdk.SecretValue.secretsManager(
+            "onepot-counter-google-client-secret"
+        ),
+        cognitoDomainPrefix: "onepot-counter",
+    }
+);
 const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {
     counterTableName: dataPersistenceStack.table.tableName,
     counterTableArn: dataPersistenceStack.table.tableArn,

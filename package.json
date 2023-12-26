@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@aws-amplify/ui-react": "^6.0.7",
         "@aws-sdk/client-dynamodb": "^3.478.0",
         "@aws-sdk/lib-dynamodb": "^3.478.0",
         "@testing-library/jest-dom": "^5.17.0",
@@ -12,6 +13,7 @@
         "@types/node": "^16.18.68",
         "@types/react": "^18.2.45",
         "@types/react-dom": "^18.2.18",
+        "aws-amplify": "^6.0.9",
         "aws-cdk-lib": "^2.115.0",
         "axios": "^1.6.2",
         "react": "^18.2.0",
@@ -25,11 +27,13 @@
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
-        "cdk:bootstrap": "npm run build && cd cdk && cdk bootstrap",
+        "cdk:bootstrap": "cd cdk && cdk bootstrap",
         "cdk:synth": "cd cdk && cdk synth",
         "cdk:diff": "cd cdk && cdk diff",
         "cdk:test": "cd cdk && jest --config ./jest.config.cdk.js",
-        "cdk:deploy": "npm run build && cd cdk && cdk deploy --all",
+        "cdk:deploy-backend": "cd cdk && cdk deploy OnePot-Counter-APIStack -O ../src/cdk-exports.json",
+        "cdk:deploy-frontend": "npm run build && cd cdk && cdk deploy OnePot-Counter-ContentDeliveryStack",
+        "cdk:deploy": "npm run cdk:deploy-backend && npm run cdk:deploy-frontend",
         "cdk:destroy": "cd cdk && cdk destroy"
     },
     "eslintConfig": {

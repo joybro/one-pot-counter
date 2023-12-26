@@ -1,9 +1,24 @@
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+import { Amplify } from "aws-amplify";
+import { signInWithRedirect } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 import "./App.css";
+import awsExports from "./aws-exports";
 import { getCounter, incrementCounter } from "./services/apiService";
 
+Amplify.configure(awsExports);
+
+const signInWithGoogle = async () => {
+    await signInWithRedirect({
+        provider: "Google",
+    });
+};
+
+// function App({ isPassedToWithAuthenticator, signOut, user }) {
 function App() {
     const [counter, setCounter] = useState(0);
+    const { route } = useAuthenticator((context) => [context.route]);
 
     // Fetch the current counter value from the backend when the component mounts
     useEffect(() => {
@@ -39,6 +54,21 @@ function App() {
                 >
                     Count Up
                 </button>
+                {route === "authenticated" ? (
+                    <button
+                        // Your sign-out logic
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-lg"
+                    >
+                        Sign Out
+                    </button>
+                ) : (
+                    <button
+                        onClick={signInWithGoogle}
+                        className="your-button-class"
+                    >
+                        Sign In with Google
+                    </button>
+                )}
             </header>
         </div>
     );
