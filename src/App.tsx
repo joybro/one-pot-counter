@@ -4,10 +4,12 @@ import { Amplify } from "aws-amplify";
 import { signInWithRedirect } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 import "./App.css";
-import awsExports from "./aws-exports";
+import amplifyConfig from "./amplifyConfig";
 import { getCounter, incrementCounter } from "./services/apiService";
 
-Amplify.configure(awsExports);
+console.log(amplifyConfig);
+Amplify.configure(amplifyConfig);
+console.log(Amplify.getConfig());
 
 const signInWithGoogle = async () => {
     await signInWithRedirect({
