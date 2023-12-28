@@ -1,7 +1,8 @@
 import axios from "axios";
 import { CounterApiResponse } from "../../shared/counterTypes";
+import { ApiStack } from "../cdkExports";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL || ApiStack.ApiUrl + "/api";
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,

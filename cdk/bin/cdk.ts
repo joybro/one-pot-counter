@@ -8,6 +8,7 @@ import { DataPersistenceStack } from "../lib/stacks/data-persistence-stack";
 
 const app = new cdk.App();
 
+// Backend stacks
 const dataPersistenceStack = new DataPersistenceStack(
     app,
     "OnePot-Counter-DBStack",
@@ -18,6 +19,7 @@ const googleClientId = app.node.tryGetContext("googleClientId");
 if (!googleClientId) {
     throw new Error("Failed to get googleClientId context value.");
 }
+const cloudFrontDomain = app.node.tryGetContext("cloudFrontDomain");
 
 const authStack = new AuthenticationStack(
     app,
@@ -28,6 +30,8 @@ const authStack = new AuthenticationStack(
             "onepot-counter-google-client-secret"
         ),
         cognitoDomainPrefix: "onepot-counter",
+        oauthRedirectUrls: [cloudFrontDomain],
+        oauthLogoutUrls: [cloudFrontDomain],
     }
 );
 const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {
@@ -35,7 +39,8 @@ const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {
     counterTableArn: dataPersistenceStack.table.tableArn,
     userPool: authStack.userPool,
 });
+
+// Frontend stack
 new ContentDeliveryStack(app, "OnePot-Counter-ContentDeliveryStack", {
     enableLogging: false,
-    api: apiStack.api,
 });

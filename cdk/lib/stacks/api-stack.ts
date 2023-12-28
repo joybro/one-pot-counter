@@ -74,5 +74,13 @@ export class APIStack extends cdk.Stack {
                 }
             );
         });
+
+        // Outputs for frontend
+        new cdk.CfnOutput(this, "ApiUrl", {
+            value: this.api.url,
+        });
+
+        this.exportValue(this.api.restApiId);
+        this.exportValue(this.api.deploymentStage.stageName);
     }
 }

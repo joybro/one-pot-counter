@@ -1,9 +1,7 @@
 // Note that this file is created by the CDK after the backend stack is deployed.
 import { AuthUserPoolConfig } from "@aws-amplify/core";
 import { ResourcesConfig } from "aws-amplify";
-import cdkExports from "./cdk-exports.json";
-
-const AuthenticationStack = cdkExports["OnePot-Counter-AuthenticationStack"];
+import { AuthenticationStack } from "./cdkExports";
 
 const amplifyConfig: ResourcesConfig = {
     Auth: {

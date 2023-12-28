@@ -55,6 +55,7 @@
         "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": true,
         "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": true,
         "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": true,
-        "googleClientId": "232736620290-9gkfdlpv0p2t3sp1d9p9h5msbsd8vp5i.apps.googleusercontent.com"
+        "googleClientId": "232736620290-9gkfdlpv0p2t3sp1d9p9h5msbsd8vp5i.apps.googleusercontent.com",
+        "cloudFrontDomain": "https://d252xm6a9k7j8o.cloudfront.net"
     }
 }

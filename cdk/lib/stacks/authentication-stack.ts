@@ -13,6 +13,8 @@ interface AuthenticationStackProps extends cdk.StackProps {
     // a user pool is not a straightforward process. To change the domain prefix, you
     // will need to delete the existing domain in the AWS Console and redeploy the stack.
     cognitoDomainPrefix: string;
+    oauthRedirectUrls?: string[];
+    oauthLogoutUrls?: string[];
 }
 export class AuthenticationStack extends cdk.Stack {
     public readonly userPool: cognito.UserPool;
@@ -22,13 +24,6 @@ export class AuthenticationStack extends cdk.Stack {
 
         // Create a Cognito User Pool
         this.userPool = new cognito.UserPool(this, "UserPool", {
-            selfSignUpEnabled: true,
-            userVerification: {
-                emailSubject: "Verify your email for our app!",
-                emailBody:
-                    "Thanks for signing up! Your verification code is {####}",
-                emailStyle: cognito.VerificationEmailStyle.CODE,
-            },
             signInAliases: {
                 email: true,
             },
@@ -60,6 +55,9 @@ export class AuthenticationStack extends cdk.Stack {
             }
         );
 
+        const oauthRedirectUrls = props.oauthRedirectUrls || [];
+        const oauthLogoutUrls = props.oauthLogoutUrls || [];
+
         // Create a Cognito User Pool Client
         const userPoolClient = new cognito.UserPoolClient(
             this,
@@ -69,6 +67,13 @@ export class AuthenticationStack extends cdk.Stack {
                 supportedIdentityProviders: [
                     cognito.UserPoolClientIdentityProvider.GOOGLE,
                 ],
+                oAuth: {
+                    callbackUrls: [
+                        ...oauthRedirectUrls,
+                        "http://localhost:3000",
+                    ],
+                    logoutUrls: [...oauthLogoutUrls, "http://localhost:3000"],
+                },
             }
         );
         // This UserPool client can be created only after the Google provider is created

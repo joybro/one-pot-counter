@@ -1,14 +1,12 @@
 import * as cdk from "aws-cdk-lib";
-import { RestApi } from "aws-cdk-lib/aws-apigateway";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
-import { RestApiOrigin, S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
+import { S3Origin } from "aws-cdk-lib/aws-cloudfront-origins";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3Deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
 interface ContentDeliverStackProps extends cdk.StackProps {
     enableLogging?: boolean;
-    api: RestApi;
 }
 export class ContentDeliveryStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: ContentDeliverStackProps) {
@@ -53,18 +51,6 @@ export class ContentDeliveryStack extends cdk.Stack {
                 origin: new S3Origin(assetBucket),
                 viewerProtocolPolicy:
                     cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-            },
-            additionalBehaviors: {
-                "/api/*": {
-                    origin: new RestApiOrigin(props.api),
-                    viewerProtocolPolicy:
-                        cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-                    cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-                    originRequestPolicy:
-                        cloudfront.OriginRequestPolicy
-                            .ALL_VIEWER_EXCEPT_HOST_HEADER,
-                    allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
-                },
             },
             // Configure logging if enabled
             logBucket: logBucket,

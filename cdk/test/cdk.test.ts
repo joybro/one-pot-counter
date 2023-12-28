@@ -46,7 +46,6 @@ test("ContentDeliveryStack has the correct resources", () => {
         "OnePot-Counter-ContentDeliveryStack",
         {
             enableLogging: false,
-            api: mockApi,
         }
     );
 
