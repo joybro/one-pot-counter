@@ -11,6 +11,8 @@ const ddbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const tableName = process.env.TABLE_NAME;
 
 export const handler: APIGatewayProxyHandler = async (event) => {
+    console.log(event.httpMethod, event.path);
+
     try {
         let response: CounterApiResponse;
         switch (event.httpMethod) {

@@ -79,8 +79,5 @@ export class APIStack extends cdk.Stack {
         new cdk.CfnOutput(this, "ApiUrl", {
             value: this.api.url,
         });
-
-        this.exportValue(this.api.restApiId);
-        this.exportValue(this.api.deploymentStage.stageName);
     }
 }

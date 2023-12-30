@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { getCounter, incrementCounter } from "../services/apiService";
+import {
+    getPublicCounter,
+    incrementPublicCounter,
+} from "../services/apiService";
 
 const PublicCounter = () => {
     const [counter, setCounter] = useState(0);
@@ -8,7 +11,7 @@ const PublicCounter = () => {
     useEffect(() => {
         const fetchCounter = async () => {
             try {
-                const count = await getCounter();
+                const count = await getPublicCounter();
                 setCounter(count);
             } catch (error) {
                 // Handle error (e.g., show a message to the user)
@@ -20,7 +23,7 @@ const PublicCounter = () => {
 
     const handleIncrement = async () => {
         try {
-            await incrementCounter();
+            await incrementPublicCounter();
             setCounter((prev) => prev + 1);
         } catch (error) {
             // Handle error (e.g., show a message to the user)

@@ -2,13 +2,13 @@ import axios from "axios";
 import { CounterApiResponse } from "../../shared/counterTypes";
 import { ApiStack } from "../cdkExports";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || ApiStack.ApiUrl + "/api";
+const API_BASE_URL = process.env.REACT_APP_API_URL || ApiStack.ApiUrl + "api";
 
 const apiClient = axios.create({
     baseURL: API_BASE_URL,
 });
 
-const getCounter = async () => {
+const getPublicCounter = async () => {
     try {
         const response = await apiClient.get("/public-counter");
         const data: CounterApiResponse = response.data;
@@ -20,7 +20,7 @@ const getCounter = async () => {
     }
 };
 
-const incrementCounter = async () => {
+const incrementPublicCounter = async () => {
     try {
         const response = await apiClient.post("/public-counter");
         const data: CounterApiResponse = response.data;
@@ -32,4 +32,35 @@ const incrementCounter = async () => {
     }
 };
 
-export { getCounter, incrementCounter };
+const getMyCounter = async (accessToken: string) => {
+    try {
+        const response = await apiClient.get("/my-counter", {
+            headers: { Authorization: `Bearer ${accessToken}` },
+        });
+        const data: CounterApiResponse = response.data;
+        return data.greeting_counter || 0;
+    } catch (error) {
+        // Handle or throw error
+        console.error("Error fetching counter data:", error);
+        throw error;
+    }
+};
+
+const incrementMyCounter = async () => {
+    try {
+        const response = await apiClient.post("/my-counter");
+        const data: CounterApiResponse = response.data;
+        return data.greeting_counter;
+    } catch (error) {
+        // Handle or throw error
+        console.error("Error incrementing counter:", error);
+        throw error;
+    }
+};
+
+export {
+    getMyCounter,
+    getPublicCounter,
+    incrementMyCounter,
+    incrementPublicCounter,
+};

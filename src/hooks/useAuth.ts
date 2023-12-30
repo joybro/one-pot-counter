@@ -1,5 +1,5 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { getCurrentUser, signInWithRedirect } from "aws-amplify/auth";
+import { fetchAuthSession, signInWithRedirect } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 
 type User = {
@@ -7,6 +7,8 @@ type User = {
     family_name?: string;
     given_name?: string;
     picture?: string;
+    accessToken: string;
+    idToken: string;
 };
 
 type UseAuthReturn = {
@@ -29,16 +31,22 @@ const useAuth = (): UseAuthReturn => {
     ]);
 
     useEffect(() => {
+        // If the user is signed in...
         if (cognitoUser) {
             (async () => {
-                const { username, userId, signInDetails } =
-                    await getCurrentUser();
-                console.log(`The username: ${username}`);
-                console.log(`The userId: ${userId}`);
-                console.log(`The signInDetails: ${signInDetails}`);
+                const { accessToken, idToken } =
+                    (await fetchAuthSession()).tokens ?? {};
+                console.log(`The accessToken: ${accessToken}`);
+                console.log(`The idToken: ${idToken}`);
+
+                if (accessToken === undefined || idToken === undefined) {
+                    throw new Error("The tokens are undefined.");
+                }
 
                 setUser({
                     email: "",
+                    accessToken: accessToken?.toString(),
+                    idToken: idToken?.toString(),
                 });
             })();
         }
@@ -52,3 +60,4 @@ const useAuth = (): UseAuthReturn => {
 };
 
 export { useAuth };
+export type { User };
