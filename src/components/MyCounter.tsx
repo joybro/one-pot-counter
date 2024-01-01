@@ -29,7 +29,7 @@ const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
 
     const handleIncrement = async () => {
         try {
-            await incrementMyCounter();
+            await incrementMyCounter(user.accessToken);
             setCounter((prev) => prev + 1);
         } catch (error) {
             // Handle error (e.g., show a message to the user)
