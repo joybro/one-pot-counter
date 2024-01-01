@@ -34,7 +34,7 @@ const authStack = new AuthenticationStack(
         oauthLogoutUrls: [cloudFrontDomain],
     }
 );
-const apiStack = new APIStack(app, "OnePot-Counter-APIStack", {
+new APIStack(app, "OnePot-Counter-APIStack", {
     counterTableName: dataPersistenceStack.table.tableName,
     counterTableArn: dataPersistenceStack.table.tableArn,
     userPool: authStack.userPool,

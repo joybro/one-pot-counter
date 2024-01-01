@@ -1,29 +1,21 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-    DynamoDBDocumentClient,
-    GetCommand,
-    UpdateCommand,
-} from "@aws-sdk/lib-dynamodb";
 import { APIGatewayProxyHandler } from "aws-lambda";
-import { CounterApiResponse } from "../../shared/counterTypes";
+import { myCounterHandler } from "./my-counter";
+import { publicCounterHandler } from "./public-counter";
 
-const ddbClient = DynamoDBDocumentClient.from(new DynamoDBClient({}));
-const tableName = process.env.TABLE_NAME;
-
-export const handler: APIGatewayProxyHandler = async (event) => {
+export const handler: APIGatewayProxyHandler = async (event, context) => {
     console.log(event.httpMethod, event.path);
 
     try {
-        let response: CounterApiResponse;
-        switch (event.httpMethod) {
-            case "GET":
-                response = await handleGetRequest();
+        let body;
+        switch (event.path) {
+            case "/api/public-counter":
+                body = await publicCounterHandler(event);
                 break;
-            case "POST":
-                response = await handlePostRequest();
+            case "/api/my-counter":
+                body = await myCounterHandler(event, context);
                 break;
             default:
-                throw new Error("Method Not Allowed");
+                throw new Error("Path Not Found");
         }
 
         return {
@@ -32,17 +24,18 @@ export const handler: APIGatewayProxyHandler = async (event) => {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(response),
+            body,
         };
     } catch (error) {
         console.error(error);
 
         const errorMessage =
             error instanceof Error ? error.message : "Internal Server Error";
-        const statusCode = errorMessage === "Method Not Allowed" ? 405 : 500;
+
+        const statusCode = errorMessage === "Path Not Found" ? 405 : 500;
 
         return {
-            statusCode,
+            statusCode: 405,
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
@@ -50,44 +43,4 @@ export const handler: APIGatewayProxyHandler = async (event) => {
             body: JSON.stringify({ message: errorMessage }),
         };
     }
-};
-
-const getToday = () => new Date().toISOString().split("T")[0];
-
-const handleGetRequest = async (): Promise<CounterApiResponse> => {
-    const today = getToday();
-
-    console.log(today);
-
-    const result = await ddbClient.send(
-        new GetCommand({
-            TableName: tableName,
-            Key: { date: today },
-        })
-    );
-
-    return {
-        date: today,
-        greeting_counter: result.Item?.greeting_counter || 0,
-    };
-};
-
-const handlePostRequest = async (): Promise<CounterApiResponse> => {
-    const today = getToday();
-
-    const result = await ddbClient.send(
-        new UpdateCommand({
-            TableName: tableName,
-            Key: { date: today },
-            UpdateExpression:
-                "SET greeting_counter = if_not_exists(greeting_counter, :zero) + :incr",
-            ExpressionAttributeValues: { ":incr": 1, ":zero": 0 },
-            ReturnValues: "UPDATED_NEW",
-        })
-    );
-
-    return {
-        date: today,
-        greeting_counter: result.Attributes?.greeting_counter,
-    };
 };

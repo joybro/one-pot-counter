@@ -9,10 +9,10 @@ export class DataPersistenceStack extends cdk.Stack {
         super(scope, id, props);
 
         // Create a DynamoDB table
-        this.table = new dynamodb.Table(this, "CounterTable", {
-            partitionKey: { name: "date", type: dynamodb.AttributeType.STRING },
+        this.table = new dynamodb.Table(this, "UserCounterTable", {
+            partitionKey: { name: "user", type: dynamodb.AttributeType.STRING },
             billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-            tableName: "DateCounter",
+            tableName: "OnePotCounter",
         });
     }
 }

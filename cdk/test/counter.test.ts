@@ -15,7 +15,6 @@ describe("Counter Handler", () => {
 
     beforeAll(() => {
         // Initialize the mock for all tests
-        jest.useFakeTimers().setSystemTime(new Date("2021-01-01"));
         process.env.TABLE_NAME = "TestTable";
     });
 
@@ -27,10 +26,10 @@ describe("Counter Handler", () => {
 
     test("GET request should return current counter", async () => {
         ddbMock.on(GetCommand).resolves({
-            Item: { date: "2021-01-01", greeting_counter: 5 },
+            Item: { user: "public", greeting_counter: 5 },
         });
 
-        const event = { httpMethod: "GET" } as any;
+        const event = { httpMethod: "GET", path: "/api/public-counter" } as any;
         const response = (await handler(
             event,
             mockContext,
@@ -42,7 +41,6 @@ describe("Counter Handler", () => {
         expect(response.statusCode).toBe(200);
         const body = JSON.parse(response.body);
         console.log(body);
-        expect(body.date).toBe("2021-01-01");
         expect(body.greeting_counter).toBe(5);
     });
 
@@ -51,7 +49,10 @@ describe("Counter Handler", () => {
             Attributes: { greeting_counter: 6 },
         });
 
-        const event = { httpMethod: "POST" } as any;
+        const event = {
+            httpMethod: "POST",
+            path: "/api/public-counter",
+        } as any;
         const response = (await handler(
             event,
             mockContext,
@@ -62,7 +63,6 @@ describe("Counter Handler", () => {
         expect(response).toBeDefined();
         expect(response.statusCode).toBe(200);
         const body = JSON.parse(response.body);
-        expect(body.date).toBe("2021-01-01");
         expect(body.greeting_counter).toBe(6);
     });
 });
