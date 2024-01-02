@@ -1,11 +1,15 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { fetchAuthSession, signInWithRedirect } from "aws-amplify/auth";
+import {
+    fetchAuthSession,
+    fetchUserAttributes,
+    signInWithRedirect,
+} from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 
 type User = {
     email: string;
-    family_name?: string;
-    given_name?: string;
+    family_name: string;
+    given_name: string;
     picture?: string;
     accessToken: string;
     idToken: string;
@@ -34,19 +38,30 @@ const useAuth = (): UseAuthReturn => {
         // If the user is signed in...
         if (cognitoUser) {
             (async () => {
-                const { accessToken, idToken } =
-                    (await fetchAuthSession()).tokens ?? {};
-                console.log(`The accessToken: ${accessToken}`);
-                console.log(`The idToken: ${idToken}`);
+                const [userAttr, authSession] = await Promise.all([
+                    fetchUserAttributes(),
+                    fetchAuthSession(),
+                ]);
 
+                const { accessToken, idToken } = authSession.tokens ?? {};
                 if (accessToken === undefined || idToken === undefined) {
                     throw new Error("The tokens are undefined.");
                 }
 
+                if (
+                    !userAttr.email ||
+                    !userAttr.family_name ||
+                    !userAttr.given_name
+                ) {
+                    throw new Error("The user attributes are undefined.");
+                }
+
                 setUser({
-                    email: "",
-                    accessToken: accessToken?.toString(),
-                    idToken: idToken?.toString(),
+                    email: userAttr.email,
+                    family_name: userAttr.family_name,
+                    given_name: userAttr.given_name,
+                    accessToken: accessToken.toString(),
+                    idToken: idToken.toString(),
                 });
             })();
         }

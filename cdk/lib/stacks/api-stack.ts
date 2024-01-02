@@ -120,7 +120,6 @@ export class APIStack extends cdk.Stack {
                 {
                     authorizationType: apigateway.AuthorizationType.COGNITO,
                     authorizer,
-                    authorizationScopes: ["openid"], // This makes the authorizer verify an access token instead of an ID token
                 }
             );
         });

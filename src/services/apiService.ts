@@ -32,10 +32,10 @@ const incrementPublicCounter = async () => {
     }
 };
 
-const getMyCounter = async (accessToken: string) => {
+const getMyCounter = async (idToken: string) => {
     try {
         const response = await apiClient.get("/my-counter", {
-            headers: { Authorization: `${accessToken}` },
+            headers: { Authorization: `${idToken}` },
         });
         const data: CounterApiResponse = response.data;
         return data.greeting_counter || 0;
@@ -46,11 +46,15 @@ const getMyCounter = async (accessToken: string) => {
     }
 };
 
-const incrementMyCounter = async (accessToken: string) => {
+const incrementMyCounter = async (idToken: string) => {
     try {
-        const response = await apiClient.post("/my-counter", undefined, {
-            headers: { Authorization: `${accessToken}` },
-        });
+        const response = await apiClient.post(
+            "/my-counter",
+            {},
+            {
+                headers: { Authorization: `${idToken}` },
+            }
+        );
         const data: CounterApiResponse = response.data;
         return data.greeting_counter;
     } catch (error) {

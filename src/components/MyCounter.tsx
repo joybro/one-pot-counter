@@ -17,7 +17,7 @@ const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
     useEffect(() => {
         const fetchCounter = async () => {
             try {
-                const count = await getMyCounter(user.accessToken);
+                const count = await getMyCounter(user.idToken);
                 setCounter(count);
             } catch (error) {
                 // Handle error (e.g., show a message to the user)
@@ -29,7 +29,7 @@ const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
 
     const handleIncrement = async () => {
         try {
-            await incrementMyCounter(user.accessToken);
+            await incrementMyCounter(user.idToken);
             setCounter((prev) => prev + 1);
         } catch (error) {
             // Handle error (e.g., show a message to the user)

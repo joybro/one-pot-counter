@@ -6,16 +6,20 @@ export const myCounterHandler = async (
     event: APIGatewayProxyEvent,
     context: Context
 ): Promise<string> => {
-    console.log("myCounterHandler", event.httpMethod, event.path);
     console.log(context);
+
+    const userEmail = event.requestContext.authorizer?.claims.email;
+    if (!userEmail) {
+        throw new Error("user email is undefined");
+    }
 
     let response: CounterApiResponse;
     switch (event.httpMethod) {
         case "GET":
-            response = await handleGetRequest();
+            response = await handleGetRequest(userEmail);
             break;
         case "POST":
-            response = await handlePostRequest();
+            response = await handlePostRequest(userEmail);
             break;
         default:
             throw new Error("Method Not Allowed");
@@ -24,16 +28,18 @@ export const myCounterHandler = async (
     return JSON.stringify(response);
 };
 
-const handleGetRequest = async (): Promise<CounterApiResponse> => {
-    const count = await getCounter("public");
+const handleGetRequest = async (email: string): Promise<CounterApiResponse> => {
+    const count = await getCounter(email);
 
     return {
         greeting_counter: count,
     };
 };
 
-const handlePostRequest = async (): Promise<CounterApiResponse> => {
-    const count = await increaseCounter("public");
+const handlePostRequest = async (
+    email: string
+): Promise<CounterApiResponse> => {
+    const count = await increaseCounter(email);
 
     return {
         greeting_counter: count,

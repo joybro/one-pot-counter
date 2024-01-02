@@ -3,7 +3,7 @@ import { myCounterHandler } from "./my-counter";
 import { publicCounterHandler } from "./public-counter";
 
 export const handler: APIGatewayProxyHandler = async (event, context) => {
-    console.log(event.httpMethod, event.path);
+    console.log(event.httpMethod, event.path, event.body, event.requestContext);
 
     try {
         let body;
@@ -35,7 +35,7 @@ export const handler: APIGatewayProxyHandler = async (event, context) => {
         const statusCode = errorMessage === "Path Not Found" ? 405 : 500;
 
         return {
-            statusCode: 405,
+            statusCode,
             headers: {
                 "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
