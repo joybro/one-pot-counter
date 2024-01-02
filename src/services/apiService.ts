@@ -48,7 +48,7 @@ const getMyCounter = async (accessToken: string) => {
 
 const incrementMyCounter = async (accessToken: string) => {
     try {
-        const response = await apiClient.post("/my-counter", {
+        const response = await apiClient.post("/my-counter", undefined, {
             headers: { Authorization: `${accessToken}` },
         });
         const data: CounterApiResponse = response.data;
