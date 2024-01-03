@@ -25,7 +25,7 @@ const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
         };
 
         fetchCounter();
-    }, []);
+    }, [user.idToken]);
 
     const handleIncrement = async () => {
         try {
