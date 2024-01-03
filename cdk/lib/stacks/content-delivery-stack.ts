@@ -21,12 +21,6 @@ export class ContentDeliveryStack extends cdk.Stack {
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS,
         });
 
-        // Deploy the web assets to the S3 bucket
-        new s3Deploy.BucketDeployment(this, "DeployWebAsset", {
-            sources: [s3Deploy.Source.asset("../build")],
-            destinationBucket: assetBucket,
-        });
-
         // Output the bucket name
         new cdk.CfnOutput(this, "WebAssetBucketName", {
             value: assetBucket.bucketName,
@@ -46,7 +40,7 @@ export class ContentDeliveryStack extends cdk.Stack {
         }
 
         // Create CloudFront distribution
-        new cloudfront.Distribution(this, "Distribution", {
+        const distribution = new cloudfront.Distribution(this, "Distribution", {
             defaultBehavior: {
                 origin: new S3Origin(assetBucket),
                 viewerProtocolPolicy:
@@ -55,6 +49,14 @@ export class ContentDeliveryStack extends cdk.Stack {
             // Configure logging if enabled
             logBucket: logBucket,
             logIncludesCookies: true,
+        });
+
+        // Deploy the web assets to the S3 bucket
+        new s3Deploy.BucketDeployment(this, "DeployWebAsset", {
+            sources: [s3Deploy.Source.asset("../build")],
+            destinationBucket: assetBucket,
+            distribution, // Invalidate CloudFront cache on deploy
+            distributionPaths: ["/"], // Invalidate only the root because we are using versioned file names for js and css
         });
     }
 }
