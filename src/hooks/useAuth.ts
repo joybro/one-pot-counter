@@ -51,7 +51,8 @@ const useAuth = (): UseAuthReturn => {
                 if (
                     !userAttr.email ||
                     !userAttr.family_name ||
-                    !userAttr.given_name
+                    !userAttr.given_name ||
+                    !userAttr.picture
                 ) {
                     throw new Error("The user attributes are undefined.");
                 }
@@ -60,6 +61,7 @@ const useAuth = (): UseAuthReturn => {
                     email: userAttr.email,
                     family_name: userAttr.family_name,
                     given_name: userAttr.given_name,
+                    picture: userAttr.picture,
                     accessToken: accessToken.toString(),
                     idToken: idToken.toString(),
                 });
