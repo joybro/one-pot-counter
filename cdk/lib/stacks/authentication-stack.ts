@@ -3,7 +3,7 @@ import * as cdk from "aws-cdk-lib";
 import * as cognito from "aws-cdk-lib/aws-cognito";
 import { Construct } from "constructs";
 
-interface AuthenticationStackProps extends cdk.StackProps {
+type AuthenticationStackProps = cdk.StackProps & {
     googleClientId: string;
     googleClientSecret: cdk.SecretValue;
 
@@ -15,7 +15,7 @@ interface AuthenticationStackProps extends cdk.StackProps {
     cognitoDomainPrefix: string;
     oauthRedirectUrls?: string[];
     oauthLogoutUrls?: string[];
-}
+};
 export class AuthenticationStack extends cdk.Stack {
     public readonly userPool: cognito.UserPool;
 

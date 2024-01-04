@@ -3,8 +3,8 @@ import * as cdk from "aws-cdk-lib";
 import "source-map-support/register";
 import { APIStack } from "../lib/stacks/api-stack";
 import { AuthenticationStack } from "../lib/stacks/authentication-stack";
-import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
 import { DataPersistenceStack } from "../lib/stacks/data-persistence-stack";
+import { FrontendHostingStack } from "../lib/stacks/frontend-hosting-stack";
 
 const app = new cdk.App();
 
@@ -41,6 +41,6 @@ new APIStack(app, "OnePot-Counter-APIStack", {
 });
 
 // Frontend stack
-new ContentDeliveryStack(app, "OnePot-Counter-ContentDeliveryStack", {
+new FrontendHostingStack(app, "OnePot-Counter-ContentDeliveryStack", {
     enableLogging: false,
 });

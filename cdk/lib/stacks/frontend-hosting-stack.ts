@@ -5,11 +5,16 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3Deploy from "aws-cdk-lib/aws-s3-deployment";
 import { Construct } from "constructs";
 
-interface ContentDeliverStackProps extends cdk.StackProps {
+type FrontendHostingStackProps = cdk.StackProps & {
     enableLogging?: boolean;
-}
-export class ContentDeliveryStack extends cdk.Stack {
-    constructor(scope: Construct, id: string, props: ContentDeliverStackProps) {
+};
+
+export class FrontendHostingStack extends cdk.Stack {
+    constructor(
+        scope: Construct,
+        id: string,
+        props: FrontendHostingStackProps
+    ) {
         super(scope, id, props);
 
         // Define the S3 bucket for hosting the web assets

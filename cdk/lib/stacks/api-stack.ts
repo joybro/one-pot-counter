@@ -7,12 +7,12 @@ import * as logs from "aws-cdk-lib/aws-logs";
 import { Construct } from "constructs";
 import * as path from "path";
 
-interface APIStackProps extends cdk.StackProps {
+type APIStackProps = cdk.StackProps & {
     counterTableName: string;
     counterTableArn: string;
     userPool: cognito.UserPool;
     enableInfoLogging?: boolean;
-}
+};
 
 export class APIStack extends cdk.Stack {
     public readonly api: apigateway.RestApi;

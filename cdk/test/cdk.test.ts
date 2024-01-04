@@ -4,7 +4,7 @@ import { RestApi } from "aws-cdk-lib/aws-apigateway";
 import { UserPool } from "aws-cdk-lib/aws-cognito";
 import { APIStack } from "../lib/stacks/api-stack";
 import { AuthenticationStack } from "../lib/stacks/authentication-stack";
-import { ContentDeliveryStack } from "../lib/stacks/content-delivery-stack";
+import { FrontendHostingStack } from "../lib/stacks/frontend-hosting-stack";
 
 test("AuthenticationStack has the correct resources", () => {
     const app = new cdk.App();
@@ -41,7 +41,7 @@ test("ContentDeliveryStack has the correct resources", () => {
     mockApi.root.addMethod("GET");
 
     // Initialize the stack
-    const stack = new ContentDeliveryStack(
+    const stack = new FrontendHostingStack(
         app,
         "OnePot-Counter-ContentDeliveryStack",
         {
