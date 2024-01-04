@@ -32,8 +32,7 @@ const PublicCounter = () => {
 
     return (
         <div>
-            <h1>Hello, World!</h1>
-            <p>Daily Counter: {counter}</p>
+            <p>Shared Counter: {counter}</p>
             <button
                 onClick={handleIncrement}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-lg"

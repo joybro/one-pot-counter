@@ -4,12 +4,14 @@ import "./App.css";
 import amplifyConfig from "./amplifyConfig";
 import MyCounter from "./components/MyCounter";
 import PublicCounter from "./components/PublicCounter";
+import TopBar from "./components/TopBar";
 
 Amplify.configure(amplifyConfig);
 
 const App = () => {
     return (
         <div className="App">
+            <TopBar />
             <main className="App-main">
                 {/* Introductory Section */}
                 <div className="mb-8">

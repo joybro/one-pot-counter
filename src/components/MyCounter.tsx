@@ -4,13 +4,9 @@ import { getMyCounter, incrementMyCounter } from "../services/apiService";
 
 type MyCounterSignedInProps = {
     user: User;
-    signOut: () => void;
 };
 
-const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
-    user,
-    signOut,
-}) => {
+const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({ user }) => {
     const [counter, setCounter] = useState(0);
 
     // Fetch the current counter value from the backend when the component mounts
@@ -38,19 +34,12 @@ const MyCounterSignedIn: React.FC<MyCounterSignedInProps> = ({
 
     return (
         <div>
-            <h1>Hello, World!</h1>
-            <p>Daily Counter: {counter}</p>
+            <p>Your Counter: {counter}</p>
             <button
                 onClick={handleIncrement}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-lg"
             >
                 Count Up
-            </button>
-            <button
-                onClick={signOut}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-lg"
-            >
-                Sign Out
             </button>
         </div>
     );
@@ -69,12 +58,12 @@ const MyCounterSignedOut: React.FC<MyCounterSignedOutProps> = ({ signIn }) => {
 };
 
 const MyCounter = () => {
-    const { user, signInWithGoogle, signOut } = useAuth();
+    const { user, signInWithGoogle } = useAuth();
 
     return (
         <div>
             {user ? (
-                <MyCounterSignedIn user={user} signOut={signOut} />
+                <MyCounterSignedIn user={user} />
             ) : (
                 <MyCounterSignedOut signIn={signInWithGoogle} />
             )}

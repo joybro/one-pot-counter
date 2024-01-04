@@ -10,7 +10,7 @@ type User = {
     email: string;
     family_name: string;
     given_name: string;
-    picture?: string;
+    picture: string;
     accessToken: string;
     idToken: string;
 };
