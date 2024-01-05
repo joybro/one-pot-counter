@@ -72,6 +72,7 @@ This project demonstrates a streamlined integration of key technologies:
 -   **TypeScript**: Adds static typing to JavaScript for improved code quality.
 -   **Tailwind CSS**: A utility-first CSS framework for efficient and responsive design.
 -   **AWS Cloud Development Kit (CDK)**: Facilitates cloud infrastructure management with code-defined resources and deployment.
+-   **AWS Amplify**: Utilized for streamlined user authentication, integrating with AWS Cognito.
 -   **ESBuild**: A fast bundler and minifier, used for efficiently bundling Lambda handlers, enhancing deployment speed.
 
 ## CDK Stacks
