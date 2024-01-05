@@ -1,6 +1,5 @@
 import "@aws-amplify/ui-react/styles.css";
 import { Amplify } from "aws-amplify";
-import "./App.css";
 import amplifyConfig from "./amplifyConfig";
 import MyCounter from "./components/MyCounter";
 import PublicCounter from "./components/PublicCounter";
