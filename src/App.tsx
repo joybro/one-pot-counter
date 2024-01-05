@@ -9,9 +9,9 @@ Amplify.configure(amplifyConfig);
 
 const App = () => {
     return (
-        <div className="text-center">
+        <div className="flex flex-col min-h-screen text-center">
             <TopBar />
-            <main className="bg-gray-700 min-h-screen flex flex-col items-center justify-center text-white text-[calc(10px+2vmin)]">
+            <main className="flex-1 bg-gray-700 flex flex-col items-center justify-center text-white text-[calc(10px+2vmin)]">
                 {/* Introductory Section */}
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold text-center mb-4">
