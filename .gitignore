@@ -26,3 +26,6 @@ yarn-error.log*
 cdk/.cdk.staging
 cdk/cdk.out
 src/cdk-exports.json
+
+# cdk-dia
+diagram.dot

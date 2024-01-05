@@ -34,7 +34,8 @@
         "cdk:deploy-backend": "cd cdk && cdk deploy OnePot-Counter-APIStack -O ../src/cdk-exports.json",
         "cdk:deploy-frontend": "npm run build && cd cdk && cdk deploy OnePot-Counter-ContentDeliveryStack",
         "cdk:deploy": "npm run cdk:deploy-backend && npm run cdk:deploy-frontend",
-        "cdk:destroy": "cd cdk && cdk destroy"
+        "cdk:destroy": "cd cdk && cdk destroy",
+        "cdk:diagram": "cdk-dia --tree cdk/cdk.out/tree.json"
     },
     "eslintConfig": {
         "extends": [
@@ -60,6 +61,7 @@
         "aws-cdk": "^2.115.0",
         "aws-sdk-client-mock": "^3.0.0",
         "aws-sdk-client-mock-jest": "^3.0.0",
+        "cdk-dia": "^0.10.0",
         "esbuild": "^0.19.10",
         "postcss": "^8.4.32",
         "tailwindcss": "^3.4.0",

@@ -76,6 +76,8 @@ This project demonstrates a streamlined integration of key technologies:
 
 ## CDK Stacks
 
+![Infrastructure Diagram](diagram.png)
+
 The project is structured into four distinct CDK stacks:
 
 1. **Frontend Hosting Stack**
