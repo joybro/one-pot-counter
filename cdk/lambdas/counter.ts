@@ -1,46 +1,51 @@
+import middy from "@middy/core";
+import cors from "@middy/http-cors";
+import httpErrorHandler from "@middy/http-error-handler";
+import httpJsonBodyParser from "@middy/http-json-body-parser";
+import validator from "@middy/validator";
+import { transpileSchema } from "@middy/validator/transpile";
 import { APIGatewayProxyHandler } from "aws-lambda";
 import { myCounterHandler } from "./my-counter";
 import { publicCounterHandler } from "./public-counter";
 
-export const handler: APIGatewayProxyHandler = async (event, context) => {
+const baseHandler: APIGatewayProxyHandler = async (event, context) => {
     console.log(event.httpMethod, event.path, event.body, event.requestContext);
 
-    try {
-        let body;
-        switch (event.path) {
-            case "/api/public-counter":
-                body = await publicCounterHandler(event);
-                break;
-            case "/api/my-counter":
-                body = await myCounterHandler(event, context);
-                break;
-            default:
-                throw new Error("Path Not Found");
-        }
-
-        return {
-            statusCode: 200,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json",
-            },
-            body,
-        };
-    } catch (error) {
-        console.error(error);
-
-        const errorMessage =
-            error instanceof Error ? error.message : "Internal Server Error";
-
-        const statusCode = errorMessage === "Path Not Found" ? 405 : 500;
-
-        return {
-            statusCode,
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ message: errorMessage }),
-        };
+    let body;
+    switch (event.path) {
+        case "/api/public-counter":
+            body = await publicCounterHandler(event);
+            break;
+        case "/api/my-counter":
+            body = await myCounterHandler(event, context);
+            break;
+        default:
+            throw new Error("Path Not Found");
     }
+
+    return {
+        statusCode: 200,
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body,
+    };
 };
+
+const eventSchema = {
+    type: "object",
+    required: ["path"],
+    properties: {
+        path: {
+            type: "string",
+            pattern: "^/api/[^/]+$",
+        },
+    },
+};
+
+export const handler = middy()
+    .use(cors())
+    .use(validator({ eventSchema: transpileSchema(eventSchema) }))
+    .use(httpErrorHandler({ logger: false, fallbackMessage: "Error: unknown" }))
+    .use(httpJsonBodyParser())
+    .handler(baseHandler);

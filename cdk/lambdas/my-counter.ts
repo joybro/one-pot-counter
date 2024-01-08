@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, Context } from "aws-lambda";
+import createError from "http-errors";
 import { CounterApiResponse } from "../../shared/counterTypes";
 import { getCounter, increaseCounter } from "./counter-db-service";
 
@@ -10,7 +11,7 @@ export const myCounterHandler = async (
 
     const userEmail = event.requestContext.authorizer?.claims.email;
     if (!userEmail) {
-        throw new Error("user email is undefined");
+        throw new createError.Unauthorized();
     }
 
     let response: CounterApiResponse;
@@ -22,7 +23,7 @@ export const myCounterHandler = async (
             response = await handlePostRequest(userEmail);
             break;
         default:
-            throw new Error("Method Not Allowed");
+            throw new createError.MethodNotAllowed();
     }
 
     return JSON.stringify(response);

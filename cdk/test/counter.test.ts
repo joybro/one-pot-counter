@@ -39,8 +39,8 @@ describe("Counter Handler", () => {
         expect(ddbMock).toHaveReceivedCommand(GetCommand);
         expect(response).toBeDefined();
         expect(response.statusCode).toBe(200);
+        expect(response.headers?.["Access-Control-Allow-Origin"]).toBe("*");
         const body = JSON.parse(response.body);
-        console.log(body);
         expect(body.greeting_counter).toBe(5);
     });
 
@@ -64,5 +64,32 @@ describe("Counter Handler", () => {
         expect(response.statusCode).toBe(200);
         const body = JSON.parse(response.body);
         expect(body.greeting_counter).toBe(6);
+    });
+
+    test("GET request should return 400 for bad request", async () => {
+        const event = { httpMethod: "GET", path: "/invalid/path" } as any;
+        const response = (await handler(
+            event,
+            mockContext,
+            mockCallback
+        )) as APIGatewayProxyResult;
+
+        expect(response).toBeDefined();
+        expect(response.statusCode).toBe(400);
+    });
+
+    test("GET request should return 500 on internal error", async () => {
+        ddbMock.on(GetCommand).rejects("an internal error");
+
+        const event = { httpMethod: "GET", path: "/api/public-counter" } as any;
+        const response = (await handler(
+            event,
+            mockContext,
+            mockCallback
+        )) as APIGatewayProxyResult;
+
+        expect(ddbMock).toHaveReceivedCommand(GetCommand);
+        expect(response).toBeDefined();
+        expect(response.statusCode).toBe(500);
     });
 });

@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
+import createError from "http-errors";
 import { CounterApiResponse } from "../../shared/counterTypes";
 import { getCounter, increaseCounter } from "./counter-db-service";
 
@@ -16,7 +17,7 @@ export const publicCounterHandler = async (
             response = await handlePostRequest();
             break;
         default:
-            throw new Error("Method Not Allowed");
+            throw new createError.MethodNotAllowed();
     }
 
     return JSON.stringify(response);
